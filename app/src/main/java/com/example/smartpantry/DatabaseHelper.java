@@ -1,11 +1,10 @@
 
-
 package com.example.smartpantry;
 
-        import android.content.ContentValues;
-        import android.content.Context;
-        import android.database.sqlite.SQLiteDatabase;
-        import android.database.sqlite.SQLiteOpenHelper;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 
 /**
  * DatabaseHelper manages the Smart Pantry Manager database.
@@ -14,6 +13,9 @@ package com.example.smartpantry;
  * 1. ingredients
  * 2. recipes
  * 3. recipe_ingredients
+ *
+ * This class is a singleton: the whole app shares ONE helper, so the
+ * database stays open while the app runs (needed for Database Inspector).
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -25,8 +27,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TABLE_RECIPE_INGREDIENTS =
             "recipe_ingredients";
 
-    // Constructor
-    public DatabaseHelper(Context context) {
+    // The single shared instance.
+    private static DatabaseHelper instance;
+
+    // Get the shared helper. Use this everywhere instead of "new".
+    public static synchronized DatabaseHelper getInstance(Context context) {
+        if (instance == null) {
+            instance = new DatabaseHelper(context.getApplicationContext());
+        }
+        return instance;
+    }
+
+    // Private so nobody can accidentally create a second helper.
+    private DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -323,11 +336,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(
             SQLiteDatabase db, int oldVersion, int newVersion) {
 
-        db.execSQL("DROP TABLE IF EXISTS recipe_ingredients");
-        db.execSQL("DROP TABLE IF EXISTS recipes");
-        db.execSQL("DROP TABLE IF EXISTS ingredients");
+        // Drop child table first because it references recipes.
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECIPE_INGREDIENTS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECIPES);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_INGREDIENTS);
 
-        createTables(db);
-        seedRecipes(db);
+        onCreate(db);
     }
 }
