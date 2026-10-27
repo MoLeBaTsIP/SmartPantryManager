@@ -1,0 +1,154 @@
+[33m361529c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Updated smart pantry manager application
+ .idea/gradle.xml                                   |   1 [32m+[m
+ .idea/misc.xml                                     |   1 [31m-[m
+ .idea/vcs.xml                                      |   6 [32m+[m
+ README.md                                          |   2 [32m+[m
+ README.txt                                         | 253 [32m+++++++++++++++++++++[m
+ .../smartpantry/AddEditIngredientActivity.java     |   4 [32m+[m[31m-[m
+ .../com/example/smartpantry/IngredientAdapter.java |  17 [32m+[m[31m-[m
+ .../java/com/example/smartpantry/MainActivity.java |   8 [32m+[m
+ .../com/example/smartpantry/RecipeAdapter.java     |   3 [32m+[m[31m-[m
+ app/src/main/res/drawable/bg_circle_glass.xml      |   5 [32m+[m
+ app/src/main/res/drawable/bg_circle_soft.xml       |   5 [32m+[m
+ app/src/main/res/drawable/bg_hero.xml              |  10 [32m+[m
+ app/src/main/res/drawable/ic_add.xml               |  10 [32m+[m
+ app/src/main/res/drawable/ic_calendar.xml          |  10 [32m+[m
+ app/src/main/res/drawable/ic_check.xml             |  10 [32m+[m
+ app/src/main/res/drawable/ic_chevron_right.xml     |  10 [32m+[m
+ app/src/main/res/drawable/ic_close.xml             |  10 [32m+[m
+ app/src/main/res/drawable/ic_delete.xml            |  10 [32m+[m
+ app/src/main/res/drawable/ic_edit.xml              |  10 [32m+[m
+ .../main/res/drawable/ic_launcher_background.xml   | 185 [32m++[m[31m-------------[m
+ .../main/res/drawable/ic_launcher_foreground.xml   |  32 [32m+[m[31m--[m
+ .../main/res/drawable/ic_launcher_monochrome.xml   |  16 [32m++[m
+ app/src/main/res/drawable/ic_logo_mark.xml         |  36 [32m+++[m
+ app/src/main/res/drawable/ic_pantry.xml            |  11 [32m+[m
+ app/src/main/res/drawable/ic_pantry_large.xml      |  11 [32m+[m
+ app/src/main/res/drawable/ic_recipe.xml            |  10 [32m+[m
+ app/src/main/res/drawable/ic_recipe_large.xml      |  10 [32m+[m
+ app/src/main/res/drawable/ic_settings.xml          |  10 [32m+[m
+ .../res/layout/activity_add_edit_ingredient.xml    |  39 [32m+++[m[31m-[m
+ app/src/main/res/layout/activity_main.xml          | 125 [32m+++++++[m[31m---[m
+ app/src/main/res/layout/activity_recipe_detail.xml |   5 [32m+[m[31m-[m
+ app/src/main/res/layout/activity_settings.xml      |  45 [32m++++[m
+ .../main/res/layout/activity_suggested_recipes.xml |  64 [32m++++[m[31m--[m
+ app/src/main/res/layout/item_dropdown.xml          |  11 [32m+[m
+ app/src/main/res/layout/item_ingredient.xml        |  99 [32m++++[m[31m----[m
+ app/src/main/res/layout/item_recipe.xml            |  75 [32m+++[m[31m---[m
+ app/src/main/res/menu/menu_main.xml                |  12 [32m+[m[31m-[m
+ app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml |   4 [32m+[m[31m-[m
+ .../res/mipmap-anydpi-v26/ic_launcher_round.xml    |   4 [32m+[m[31m-[m
+ app/src/main/res/mipmap-hdpi/ic_launcher.webp      | Bin [31m1404[m -> [32m2860[m bytes
+ .../main/res/mipmap-hdpi/ic_launcher_round.webp    | Bin [31m2898[m -> [32m3972[m bytes
+ app/src/main/res/mipmap-mdpi/ic_launcher.webp      | Bin [31m982[m -> [32m1984[m bytes
+ .../main/res/mipmap-mdpi/ic_launcher_round.webp    | Bin [31m1772[m -> [32m2962[m bytes
+ app/src/main/res/mipmap-xhdpi/ic_launcher.webp     | Bin [31m1900[m -> [32m3796[m bytes
+ .../main/res/mipmap-xhdpi/ic_launcher_round.webp   | Bin [31m3918[m -> [32m5204[m bytes
+ app/src/main/res/mipmap-xxhdpi/ic_launcher.webp    | Bin [31m2884[m -> [32m5642[m bytes
+ .../main/res/mipmap-xxhdpi/ic_launcher_round.webp  | Bin [31m5914[m -> [32m7938[m bytes
+ app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp   | Bin [31m3844[m -> [32m7546[m bytes
+ .../main/res/mipmap-xxxhdpi/ic_launcher_round.webp | Bin [31m7778[m -> [32m10586[m bytes
+ app/src/main/res/values/colors.xml                 |   4 [32m+[m
+ app/src/main/res/values/strings.xml                |   7 [32m+[m[31m-[m
+ 51 files changed, 875 insertions(+), 325 deletions(-)
+[33m326a15b[m Update SmartPantry features
+ .idea/deploymentTargetDropDown.xml                 |  15 [32m+[m[31m-[m
+ .idea/gradle.xml                                   |   1 [31m-[m
+ .idea/misc.xml                                     |   1 [32m+[m
+ .idea/vcs.xml                                      |   6 [31m-[m
+ README.md                                          |  90 [32m++++++[m
+ app/build.gradle                                   |   2 [32m+[m[31m-[m
+ app/src/main/AndroidManifest.xml                   |  33 [32m++[m[31m-[m
+ .../smartpantry/AddEditIngredientActivity.java     | 316 [32m+++++++++++++++++++++[m
+ .../java/com/example/smartpantry/BaseActivity.java |  62 [32m++++[m
+ .../com/example/smartpantry/DatabaseHelper.java    | 302 [32m++++++++++++++++[m[31m----[m
+ .../java/com/example/smartpantry/ExpiryHelper.java |  73 [32m+++++[m
+ .../java/com/example/smartpantry/Ingredient.java   |  41 [32m+++[m
+ .../com/example/smartpantry/IngredientAdapter.java | 117 [32m++++++++[m
+ .../example/smartpantry/IngredientKnowledge.java   | 120 [32m++++++++[m
+ .../java/com/example/smartpantry/MainActivity.java | 291 [32m++++++++[m[31m-----------[m
+ .../main/java/com/example/smartpantry/Recipe.java  |  31 [32m++[m
+ .../com/example/smartpantry/RecipeAdapter.java     |  84 [32m++++++[m
+ .../example/smartpantry/RecipeDetailActivity.java  |  69 [32m+++++[m
+ .../com/example/smartpantry/RecipeIngredient.java  |  30 [32m++[m
+ .../com/example/smartpantry/RecipeMatcher.java     | 210 [32m++++++++++++++[m
+ .../com/example/smartpantry/SettingsActivity.java  |  58 [32m++++[m
+ .../smartpantry/SuggestedRecipesActivity.java      |  91 [32m++++++[m
+ .../com/example/smartpantry/UnitConverter.java     |  83 [32m++++++[m
+ app/src/main/res/drawable/bg_banner.xml            |   6 [32m+[m
+ app/src/main/res/drawable/bg_pill.xml              |   6 [32m+[m
+ .../res/layout/activity_add_edit_ingredient.xml    | 144 [32m++++++++++[m
+ app/src/main/res/layout/activity_main.xml          | 197 [32m+++++++[m[31m------[m
+ app/src/main/res/layout/activity_recipe_detail.xml | 103 [32m+++++++[m
+ app/src/main/res/layout/activity_settings.xml      | 103 [32m+++++++[m
+ .../main/res/layout/activity_suggested_recipes.xml |  62 [32m++++[m
+ app/src/main/res/layout/item_ingredient.xml        |  82 [32m++++++[m
+ app/src/main/res/layout/item_recipe.xml            |  51 [32m++++[m
+ app/src/main/res/menu/menu_main.xml                |  19 [32m++[m
+ app/src/main/res/values-night/themes.xml           |  21 [32m+[m[31m-[m
+ app/src/main/res/values/colors.xml                 |  15 [32m+[m[31m-[m
+ app/src/main/res/values/strings.xml                | 107 [32m++++++[m[31m-[m
+ app/src/main/res/values/themes.xml                 |  19 [32m+[m[31m-[m
+ .../com/example/smartpantry/ExpiryHelperTest.java  |  44 [32m+++[m
+ .../com/example/smartpantry/RecipeMatcherTest.java | 216 [32m++++++++++++++[m
+ 39 files changed, 2974 insertions(+), 347 deletions(-)
+[33m57edc98[m syncing the gradle to establish a successful build
+ app/build.gradle | 1 [32m+[m
+ 1 file changed, 1 insertion(+)
+[33meba17c0[m fixing database closing early and add shared DatabaseHelper singleton
+ .idea/deploymentTargetDropDown.xml                 |  14 [32m+[m[31m-[m
+ .idea/misc.xml                                     |   1 [31m-[m
+ .../com/example/smartpantry/DatabaseHelper.java    |  37 [32m++[m[31m--[m
+ .../java/com/example/smartpantry/MainActivity.java | 208 [32m++++++++++++++++++++[m[31m-[m
+ 4 files changed, 230 insertions(+), 30 deletions(-)
+[33m6175bf6[m Connect pantry CRUD operations to SQLite
+ .idea/deploymentTargetDropDown.xml                 |  26 [32m+[m[31m-[m
+ .../com/example/smartpantry/DatabaseHelper.java    | 333 [32m+++++++++++++++++++++[m
+ .../java/com/example/smartpantry/MainActivity.java |   5 [32m+[m[31m-[m
+ app/src/main/res/layout/activity_main.xml          | 124 [32m+++++++[m[31m-[m
+ 4 files changed, 474 insertions(+), 14 deletions(-)
+[33m34e6a2b[m initialise Smart pantry manager project
+ .gitignore                                         |  15 [32m++[m
+ .idea/.gitignore                                   |   3 [32m+[m
+ .idea/compiler.xml                                 |   6 [32m+[m
+ .idea/deploymentTargetDropDown.xml                 |  10 [32m++[m
+ .idea/gradle.xml                                   |  19 [32m+++[m
+ .idea/migrations.xml                               |  10 [32m++[m
+ .idea/misc.xml                                     |  10 [32m++[m
+ .idea/vcs.xml                                      |   6 [32m+[m
+ app/.gitignore                                     |   1 [32m+[m
+ app/build.gradle                                   |  39 [32m+++++[m
+ app/proguard-rules.pro                             |  21 [32m+++[m
+ .../smartpantry/ExampleInstrumentedTest.java       |  26 [32m+++[m
+ app/src/main/AndroidManifest.xml                   |  26 [32m+++[m
+ .../java/com/example/smartpantry/MainActivity.java |  14 [32m++[m
+ .../main/res/drawable/ic_launcher_background.xml   | 170 [32m+++++++++++++++++++[m
+ .../main/res/drawable/ic_launcher_foreground.xml   |  30 [32m++++[m
+ app/src/main/res/layout/activity_main.xml          |  18 [32m++[m
+ app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml |   6 [32m+[m
+ .../res/mipmap-anydpi-v26/ic_launcher_round.xml    |   6 [32m+[m
+ app/src/main/res/mipmap-hdpi/ic_launcher.webp      | Bin [31m0[m -> [32m1404[m bytes
+ .../main/res/mipmap-hdpi/ic_launcher_round.webp    | Bin [31m0[m -> [32m2898[m bytes
+ app/src/main/res/mipmap-mdpi/ic_launcher.webp      | Bin [31m0[m -> [32m982[m bytes
+ .../main/res/mipmap-mdpi/ic_launcher_round.webp    | Bin [31m0[m -> [32m1772[m bytes
+ app/src/main/res/mipmap-xhdpi/ic_launcher.webp     | Bin [31m0[m -> [32m1900[m bytes
+ .../main/res/mipmap-xhdpi/ic_launcher_round.webp   | Bin [31m0[m -> [32m3918[m bytes
+ app/src/main/res/mipmap-xxhdpi/ic_launcher.webp    | Bin [31m0[m -> [32m2884[m bytes
+ .../main/res/mipmap-xxhdpi/ic_launcher_round.webp  | Bin [31m0[m -> [32m5914[m bytes
+ app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp   | Bin [31m0[m -> [32m3844[m bytes
+ .../main/res/mipmap-xxxhdpi/ic_launcher_round.webp | Bin [31m0[m -> [32m7778[m bytes
+ app/src/main/res/values-night/themes.xml           |   7 [32m+[m
+ app/src/main/res/values/colors.xml                 |   5 [32m+[m
+ app/src/main/res/values/strings.xml                |   3 [32m+[m
+ app/src/main/res/values/themes.xml                 |   9 [32m+[m
+ app/src/main/res/xml/backup_rules.xml              |  13 [32m++[m
+ app/src/main/res/xml/data_extraction_rules.xml     |  19 [32m+++[m
+ .../com/example/smartpantry/ExampleUnitTest.java   |  17 [32m++[m
+ build.gradle                                       |   4 [32m+[m
+ gradle.properties                                  |  21 [32m+++[m
+ gradle/wrapper/gradle-wrapper.jar                  | Bin [31m0[m -> [32m59203[m bytes
+ gradle/wrapper/gradle-wrapper.properties           |   6 [32m+[m
+ gradlew                                            | 185 [32m+++++++++++++++++++++[m
+ gradlew.bat                                        |  89 [32m++++++++++[m
+ settings.gradle                                    |  17 [32m++[m
+ 43 files changed, 831 insertions(+)
