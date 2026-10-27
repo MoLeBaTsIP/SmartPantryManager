@@ -1,213 +1,168 @@
 package com.example.smartpantry;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.Date;
 
-    private static final String TAG = "SmartPantryDB";
+/**
+ * Pantry List screen (launcher screen).
+ * Reads every ingredient from SQLite and shows it in a RecyclerView.
+ * The list is reloaded in onResume(), so changes made on the Add/Edit screen
+ * appear as soon as the user comes back.
+ */
+public class MainActivity extends BaseActivity
+        implements IngredientAdapter.Listener {
+
+    private static final String TAG = "SmartPantry";
+
+    private RecyclerView recyclerViewIngredients;
+    private TextView tvPantryEmpty;
+    private TextView tvExpiryBanner;
+    private TextView tvRecipesReady;
+    private IngredientAdapter adapter;
+    private DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Get the shared database helper (one instance for the whole app).
-        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(this);
+        recyclerViewIngredients = findViewById(R.id.recyclerViewIngredients);
+        tvPantryEmpty = findViewById(R.id.tvPantryEmpty);
+        tvExpiryBanner = findViewById(R.id.tvExpiryBanner);
+        tvRecipesReady = findViewById(R.id.tvRecipesReady);
+        View cardRecipesReady = findViewById(R.id.cardRecipesReady);
+        Button btnAdd = findViewById(R.id.btnAddIngredient);
+        Button btnRecipes = findViewById(R.id.btnSuggestedRecipes);
+        Button btnSettings = findViewById(R.id.btnSettings);
 
+        // Opening the database creates the tables and seeds the recipes (first run only).
+        databaseHelper = DatabaseHelper.getInstance(this);
+
+        adapter = new IngredientAdapter(this);
+        recyclerViewIngredients.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewIngredients.setAdapter(adapter);
+
+        // Explicit Intents to the other screens.
+        btnAdd.setOnClickListener(v ->
+                startActivity(new Intent(this, AddEditIngredientActivity.class)));
+
+        btnRecipes.setOnClickListener(v ->
+                startActivity(new Intent(this, SuggestedRecipesActivity.class)));
+
+        // The "recipes ready" card is a shortcut to the same screen.
+        cardRecipesReady.setOnClickListener(v ->
+                startActivity(new Intent(this, SuggestedRecipesActivity.class)));
+
+        btnSettings.setOnClickListener(v ->
+                startActivity(new Intent(this, SettingsActivity.class)));
+    }
+
+    // Runs every time the screen becomes visible, so the list is always up to date.
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadIngredients();
+    }
+
+    private void loadIngredients() {
         try {
-            // Open the database. It is left OPEN on purpose so that
-            // Database Inspector can connect to it.
-            SQLiteDatabase db = databaseHelper.getWritableDatabase();
+            ArrayList<Ingredient> ingredients = databaseHelper.getAllIngredients();
+            boolean highlight = SettingsActivity.isExpiryAlertsEnabled(this);
 
-            Log.d(TAG, "========== DATABASE TEST ==========");
-            Log.d(TAG, "Database opened successfully.");
-            Log.d(TAG, "Database file: " + db.getPath());
+            adapter.setData(ingredients, highlight);
 
-            // TEST 1: Check whether all three tables exist.
-            boolean ingredientsExists =
-                    tableExists(db, "ingredients");
+            // Empty-state message instead of a blank screen.
+            boolean empty = ingredients.isEmpty();
+            tvPantryEmpty.setText(R.string.pantry_empty);
+            tvPantryEmpty.setVisibility(empty ? View.VISIBLE : View.GONE);
+            recyclerViewIngredients.setVisibility(empty ? View.GONE : View.VISIBLE);
 
-            boolean recipesExists =
-                    tableExists(db, "recipes");
-
-            boolean recipeIngredientsExists =
-                    tableExists(db, "recipe_ingredients");
-
-            Log.d(TAG, "ingredients table exists: "
-                    + ingredientsExists);
-
-            Log.d(TAG, "recipes table exists: "
-                    + recipesExists);
-
-            Log.d(TAG, "recipe_ingredients table exists: "
-                    + recipeIngredientsExists);
-
-            // TEST 2: Check foreign-key enforcement.
-            int foreignKeyStatus = getForeignKeyStatus(db);
-
-            Log.d(TAG, "Foreign-key enforcement status: "
-                    + foreignKeyStatus);
-
-            // Check whether recipe_ingredients references recipes.
-            boolean recipeForeignKeyExists =
-                    hasRecipeForeignKey(db);
-
-            Log.d(TAG, "Recipe foreign-key constraint exists: "
-                    + recipeForeignKeyExists);
-
-            // TEST 3: Count recipes and recipe requirements.
-            if (ingredientsExists
-                    && recipesExists
-                    && recipeIngredientsExists) {
-
-                int recipeCount = getCount(db, "recipes");
-
-                int requirementCount =
-                        getCount(db, "recipe_ingredients");
-
-                Log.d(TAG, "Recipes stored: " + recipeCount);
-
-                Log.d(TAG, "Recipe requirements stored: "
-                        + requirementCount);
-
-                // Print every recipe name so the data can be seen in Logcat.
-                logRecipeNames(db);
-
-                // Report whether the expected recipe data exists.
-                if (recipeCount == 20 && requirementCount > 0) {
-                    Log.d(TAG, "RECIPE TEST PASSED.");
-                } else {
-                    Log.w(TAG, "RECIPE TEST NEEDS ATTENTION.");
-                }
-
-                // Report whether foreign keys are working as configured.
-                if (foreignKeyStatus == 1
-                        && recipeForeignKeyExists) {
-                    Log.d(TAG, "FOREIGN-KEY CONFIGURATION PASSED.");
-                } else {
-                    Log.w(TAG, "FOREIGN-KEY CONFIGURATION FAILED.");
-                }
-
-                // Show the recipe count on the screen.
-                Toast.makeText(
-                        this,
-                        "Database ready. Recipes: " + recipeCount,
-                        Toast.LENGTH_LONG
-                ).show();
-
-            } else {
-                Log.e(TAG, "TABLE TEST FAILED. One or more tables are missing.");
-
-                Toast.makeText(
-                        this,
-                        "Database error: one or more tables are missing.",
-                        Toast.LENGTH_LONG
-                ).show();
-            }
-
-            Log.d(TAG, "========== END DATABASE TEST ==========");
+            updateExpiryBanner(ingredients, highlight);
+            updateRecipeCard(ingredients);
+            Log.d(TAG, "Pantry ingredients loaded: " + ingredients.size());
 
         } catch (Exception e) {
-            Log.e(TAG, "Database verification failed", e);
-
-            Toast.makeText(
-                    this,
-                    "Database error: " + e.getMessage(),
-                    Toast.LENGTH_LONG
-            ).show();
-
-        }
-        // NOTE: the helper is NOT closed here. Closing it right after
-        // onCreate() made smart_pantry.db show as "(closed)" in
-        // Database Inspector.
-    }
-
-    // Write every recipe name to Logcat (tag: SmartPantryDB).
-    private void logRecipeNames(SQLiteDatabase db) {
-        try (Cursor cursor = db.rawQuery(
-                "SELECT id, name FROM recipes ORDER BY id", null)) {
-
-            while (cursor.moveToNext()) {
-                Log.d(TAG, "RECIPE " + cursor.getInt(0)
-                        + ": " + cursor.getString(1));
-            }
+            Log.e(TAG, "Failed to load pantry ingredients", e);
+            tvPantryEmpty.setText(R.string.pantry_load_error);
+            tvPantryEmpty.setVisibility(View.VISIBLE);
+            recyclerViewIngredients.setVisibility(View.GONE);
         }
     }
 
-    // Check whether a table exists in the database.
-    private boolean tableExists(
-            SQLiteDatabase db, String tableName) {
-
-        try (Cursor cursor = db.rawQuery(
-                "SELECT name FROM sqlite_master "
-                        + "WHERE type = 'table' AND name = ?",
-                new String[]{tableName})) {
-
-            return cursor.moveToFirst();
+    // Tell the user straight away how many recipes the current pantry can make.
+    private void updateRecipeCard(ArrayList<Ingredient> ingredients) {
+        int ready = RecipeMatcher.findMakeableRecipes(
+                databaseHelper.getAllRecipes(), ingredients).size();
+        if (ready > 0) {
+            tvRecipesReady.setText(getResources().getQuantityString(
+                    R.plurals.recipes_ready, ready, ready));
+        } else {
+            tvRecipesReady.setText(R.string.recipes_ready_none);
         }
     }
 
-    // Count records in a known database table.
-    private int getCount(SQLiteDatabase db, String tableName) {
+    // Warn about items that are expired or expire within a few days.
+    private void updateExpiryBanner(ArrayList<Ingredient> ingredients, boolean enabled) {
         int count = 0;
-
-        try (Cursor cursor = db.rawQuery(
-                "SELECT COUNT(*) FROM " + tableName, null)) {
-
-            if (cursor.moveToFirst()) {
-                count = cursor.getInt(0);
+        Date today = new Date();
+        for (Ingredient item : ingredients) {
+            if (ExpiryHelper.isExpired(item.getExpiryDate(), today)
+                    || ExpiryHelper.isExpiringSoon(item.getExpiryDate(), today)) {
+                count++;
             }
         }
-
-        return count;
+        if (enabled && count > 0) {
+            tvExpiryBanner.setText(getResources().getQuantityString(
+                    R.plurals.expiry_banner, count, count));
+            tvExpiryBanner.setVisibility(View.VISIBLE);
+        } else {
+            tvExpiryBanner.setVisibility(View.GONE);
+        }
     }
 
-    // Check whether foreign-key enforcement is enabled.
-    private int getForeignKeyStatus(SQLiteDatabase db) {
-        try (Cursor cursor = db.rawQuery(
-                "PRAGMA foreign_keys", null)) {
+    // ---- IngredientAdapter.Listener ----
 
-            if (cursor.moveToFirst()) {
-                return cursor.getInt(0);
-            }
-        }
-
-        return -1;
+    @Override
+    public void onEdit(Ingredient ingredient) {
+        // Pass only the record id; the Edit screen loads the row from SQLite.
+        Intent intent = new Intent(this, AddEditIngredientActivity.class);
+        intent.putExtra(AddEditIngredientActivity.EXTRA_INGREDIENT_ID,
+                ingredient.getId());
+        startActivity(intent);
     }
 
-    // Check whether recipe_ingredients references recipes.
-    private boolean hasRecipeForeignKey(SQLiteDatabase db) {
-        try (Cursor cursor = db.rawQuery(
-                "PRAGMA foreign_key_list(recipe_ingredients)",
-                null)) {
-
-            int tableColumn = cursor.getColumnIndex("table");
-            int fromColumn = cursor.getColumnIndex("from");
-            int toColumn = cursor.getColumnIndex("to");
-
-            while (cursor.moveToNext()) {
-                if (tableColumn >= 0
-                        && fromColumn >= 0
-                        && toColumn >= 0
-                        && "recipes".equalsIgnoreCase(
-                        cursor.getString(tableColumn))
-                        && "recipe_id".equalsIgnoreCase(
-                        cursor.getString(fromColumn))
-                        && "id".equalsIgnoreCase(
-                        cursor.getString(toColumn))) {
-                    return true;
-                }
-            }
+    @Override
+    public void onDelete(Ingredient ingredient) {
+        if (SettingsActivity.isConfirmDeleteEnabled(this)) {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.delete_title)
+                    .setMessage(getString(R.string.delete_message, ingredient.getName()))
+                    .setPositiveButton(R.string.delete, (dialog, which) ->
+                            deleteIngredient(ingredient))
+                    .setNegativeButton(R.string.cancel, null)
+                    .show();
+        } else {
+            deleteIngredient(ingredient);
         }
+    }
 
-        return false;
+    private void deleteIngredient(Ingredient ingredient) {
+        int rows = databaseHelper.deleteIngredient(ingredient.getId());
+        Toast.makeText(this,
+                rows > 0 ? R.string.ingredient_deleted : R.string.ingredient_not_deleted,
+                Toast.LENGTH_SHORT).show();
+        loadIngredients();
     }
 }
-
-

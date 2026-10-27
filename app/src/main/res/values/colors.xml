@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- One calm green accent on neutral greys. Red is used only for expiry warnings. -->
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="primary">#2F6B4F</color>
+    <color name="primary_soft">#E6EFEA</color>
+
+    <color name="screen_background">#F6F7F6</color>
+    <color name="card_background">#FFFFFF</color>
+    <color name="ink">#1B2421</color>
+    <color name="text_secondary">#69726D</color>
+    <color name="divider">#E1E5E2</color>
+
+    <color name="warning">#B3402F</color>
+    <color name="warning_background">#FBEDEA</color>
 </resources>
