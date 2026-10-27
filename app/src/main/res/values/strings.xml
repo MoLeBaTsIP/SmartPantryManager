@@ -15,6 +15,7 @@
 
     <!-- Pantry list -->
     <string name="pantry_heading">My Pantry</string>
+    <string name="settings_subtitle">Make the app work your way</string>
     <string name="pantry_tagline">Use what you have. Waste less.</string>
     <plurals name="recipes_ready">
         <item quantity="one">%d recipe ready to cook</item>
@@ -25,7 +26,11 @@
     <string name="add_ingredient">Add ingredient</string>
     <string name="suggested_recipes">Recipes</string>
     <string name="settings">Settings</string>
-    <string name="pantry_empty">Your pantry is empty.\nTap \"Add Ingredient\" to get started.</string>
+    <string name="pantry_empty">Your pantry is empty.\nTap \"Add ingredient\" to get started.</string>
+    <plurals name="pantry_count">
+        <item quantity="one">In your pantry \u00B7 %d item</item>
+        <item quantity="other">In your pantry \u00B7 %d items</item>
+    </plurals>
     <string name="pantry_load_error">Could not load ingredients. Please try again.</string>
     <string name="quantity_format">%1$s %2$s</string>
     <string name="expiry_not_set">No expiry date</string>

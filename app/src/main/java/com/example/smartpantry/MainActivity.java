@@ -30,6 +30,7 @@ public class MainActivity extends BaseActivity
     private TextView tvPantryEmpty;
     private TextView tvExpiryBanner;
     private TextView tvRecipesReady;
+    private TextView tvPantryCount;
     private IngredientAdapter adapter;
     private DatabaseHelper databaseHelper;
 
@@ -42,6 +43,7 @@ public class MainActivity extends BaseActivity
         tvPantryEmpty = findViewById(R.id.tvPantryEmpty);
         tvExpiryBanner = findViewById(R.id.tvExpiryBanner);
         tvRecipesReady = findViewById(R.id.tvRecipesReady);
+        tvPantryCount = findViewById(R.id.tvPantryCount);
         View cardRecipesReady = findViewById(R.id.cardRecipesReady);
         Button btnAdd = findViewById(R.id.btnAddIngredient);
         Button btnRecipes = findViewById(R.id.btnSuggestedRecipes);
@@ -89,6 +91,11 @@ public class MainActivity extends BaseActivity
             tvPantryEmpty.setVisibility(empty ? View.VISIBLE : View.GONE);
             recyclerViewIngredients.setVisibility(empty ? View.GONE : View.VISIBLE);
 
+            // "In your pantry · 4 items" above the list (hidden while the pantry is empty).
+            tvPantryCount.setText(getResources().getQuantityString(
+                    R.plurals.pantry_count, ingredients.size(), ingredients.size()));
+            tvPantryCount.setVisibility(empty ? View.GONE : View.VISIBLE);
+
             updateExpiryBanner(ingredients, highlight);
             updateRecipeCard(ingredients);
             Log.d(TAG, "Pantry ingredients loaded: " + ingredients.size());
@@ -98,6 +105,7 @@ public class MainActivity extends BaseActivity
             tvPantryEmpty.setText(R.string.pantry_load_error);
             tvPantryEmpty.setVisibility(View.VISIBLE);
             recyclerViewIngredients.setVisibility(View.GONE);
+            tvPantryCount.setVisibility(View.GONE);
         }
     }
 

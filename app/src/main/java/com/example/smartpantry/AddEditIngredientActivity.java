@@ -96,13 +96,13 @@ public class AddEditIngredientActivity extends BaseActivity {
         }
 
         actUnit.setAdapter(new ArrayAdapter<>(
-                this, android.R.layout.simple_dropdown_item_1line, units));
+                this, R.layout.item_dropdown, units));
         actUnit.setOnItemClickListener((parent, view, position, id) ->
                 unitChosenByUser = true);
 
         // Suggest the ingredient names that the recipes use.
         etName.setAdapter(new ArrayAdapter<>(
-                this, android.R.layout.simple_dropdown_item_1line,
+                this, R.layout.item_dropdown,
                 capitalised(databaseHelper.getRecipeIngredientNames())));
         etName.setThreshold(1);
 

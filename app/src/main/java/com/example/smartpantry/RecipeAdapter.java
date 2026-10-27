@@ -3,7 +3,6 @@ package com.example.smartpantry;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -72,7 +71,7 @@ public class RecipeAdapter
     static class RecipeViewHolder extends RecyclerView.ViewHolder {
         final TextView tvName;
         final TextView tvIngredients;
-        final Button btnView;
+        final View btnView;
 
         RecipeViewHolder(@NonNull View itemView) {
             super(itemView);

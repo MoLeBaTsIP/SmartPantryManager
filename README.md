@@ -27,6 +27,8 @@ there are no "almost there" results. It copes with messy input by:
 
 - normalising names (`Tomatoes` = `tomato`, `EGGS` = `egg`),
 - converting units before comparing (`1 kg` satisfies `500 g`; `1 l` satisfies `200 ml`),
+- ignoring describing words (`Olive oil` = `oil`, `Whole milk` = `milk`),
+- comparing common counted items by weight (`1 egg` is about `50 g`) and treating water as always available,
 - adding up several pantry rows of the same ingredient,
 - never treating mass, volume and counted items (pieces / slices / cloves) as interchangeable -
   if units cannot be compared safely the recipe is excluded.

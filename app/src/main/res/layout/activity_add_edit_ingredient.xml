@@ -25,10 +25,13 @@
                 android:id="@+id/etIngredientName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:imeOptions="actionNext"
                 android:inputType="textCapWords"
                 android:maxLength="50"
-                android:singleLine="true" />
+                android:minHeight="68dp"
+                android:singleLine="true"
+                android:textSize="20sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
@@ -51,7 +54,9 @@
                     android:id="@+id/etIngredientQuantity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal" />
+                    android:inputType="numberDecimal"
+                    android:minHeight="60dp"
+                    android:textSize="18sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -66,7 +71,9 @@
                     android:id="@+id/actIngredientUnit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="none" />
+                    android:inputType="none"
+                    android:minHeight="60dp"
+                    android:textSize="18sp" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
@@ -84,7 +91,9 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="false"
-                android:inputType="none" />
+                android:inputType="none"
+                android:minHeight="60dp"
+                android:textSize="18sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
@@ -99,7 +108,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/pick_date"
-                android:textAllCaps="false" />
+                android:textAllCaps="false"
+                app:icon="@drawable/ic_calendar"
+                app:iconGravity="textStart"
+                app:iconPadding="6dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnClearExpiry"
@@ -108,7 +120,11 @@
                 android:layout_height="wrap_content"
                 android:text="@string/clear_date"
                 android:textAllCaps="false"
-                android:textColor="@color/text_secondary" />
+                android:textColor="@color/text_secondary"
+                app:icon="@drawable/ic_close"
+                app:iconGravity="textStart"
+                app:iconPadding="6dp"
+                app:iconTint="@color/text_secondary" />
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
@@ -119,7 +135,10 @@
             android:layout_marginTop="16dp"
             android:text="@string/save_ingredient"
             android:textAllCaps="false"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            app:icon="@drawable/ic_check"
+            app:iconGravity="textStart"
+            app:iconPadding="8dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCancelIngredient"
@@ -139,6 +158,10 @@
             android:text="@string/delete_ingredient"
             android:textAllCaps="false"
             android:textColor="@color/warning"
-            android:visibility="gone" />
+            android:visibility="gone"
+            app:icon="@drawable/ic_delete"
+            app:iconGravity="textStart"
+            app:iconPadding="8dp"
+            app:iconTint="@color/warning" />
     </LinearLayout>
 </ScrollView>

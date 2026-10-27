@@ -98,6 +98,9 @@
             android:layout_height="52dp"
             android:layout_marginTop="24dp"
             android:text="@string/back_to_recipes"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            app:icon="@drawable/ic_recipe"
+            app:iconGravity="textStart"
+            app:iconPadding="8dp" />
     </LinearLayout>
 </ScrollView>
