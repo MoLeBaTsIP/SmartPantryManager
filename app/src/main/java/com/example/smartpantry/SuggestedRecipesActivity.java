@@ -17,6 +17,7 @@ import java.util.List;
  * Loads the pantry and all recipes from SQLite and shows ONLY the recipes
  * that RecipeMatcher says can be cooked right now (strict matching).
  */
+// Shows recipes the user can make from the ingredients currently in the pantry.
 public class SuggestedRecipesActivity extends BaseActivity {
 
     public static final String EXTRA_RECIPE_ID = "recipe_id";
