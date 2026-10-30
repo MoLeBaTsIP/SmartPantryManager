@@ -314,3 +314,4 @@ public class AddEditIngredientActivity extends BaseActivity {
         }
     }
 }
+// Unit dropdown: lets the user pick g, kg, ml, L, etc. instead of typing a unit.
